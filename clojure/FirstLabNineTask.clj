@@ -4,5 +4,8 @@
 (defn sum-nested
   "Рекурсивно обходит вложенные коллекции и суммирует все числа"
   [coll]
-  ;; TODO: реализовать логику
-  )
+  (cond
+    (number? coll) coll
+    (sequential? coll)
+      (reduce + 0 (map sum-nested coll))
+    :else 0)) 
