@@ -115,3 +115,63 @@ local function a_star(start_pos, goal_pos, grid)
     return nil -- Путь не найден
 end
 
+-- ТЕСТОВАЯ ЧАСТЬ
+-- ==========================================
+
+-- 1 = Стена, 0 = Проход
+local map = {
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 1, 1, 1, 1, 1, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 1, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 1, 0, 0, 0, 0},
+    {0, 0, 1, 1, 0, 1, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 1, 1, 1, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+}
+
+local start_node = {x = 1, y = 1}
+local goal_node = {x = 10, y = 8}
+
+print("Запуск поиска пути...")
+local path = a_star(start_node, goal_node, map)
+
+if path then
+    print("Путь найден! Длина: " .. #path)
+    
+    -- Рисуем карту с путем
+    -- Создаем копию карты для отрисовки, чтобы не портить оригинал
+    local display_map = {}
+    for i, row in ipairs(map) do
+        display_map[i] = {}
+        for j, val in ipairs(row) do
+            display_map[i][j] = val
+        end
+    end
+
+    -- Помечаем путь символом '*'
+    for _, p in ipairs(path) do
+        -- Не помечаем старт и финиш стенами, если вдруг они совпали с логикой, 
+        -- но в данном случае просто меняем 0 на *
+        if display_map[p.y][p.x] == 0 then
+            display_map[p.y][p.x] = '*' 
+        end
+    end
+    
+    -- Ставим обозначения старта и финиша
+    display_map[start_node.y][start_node.x] = 'S'
+    display_map[goal_node.y][goal_node.x] = 'E'
+
+    print("\nКарта (S - Старт, E - Финиш, * - Путь, 1 - Стена):")
+    for _, row in ipairs(display_map) do
+        local line = ""
+        for _, val in ipairs(row) do
+            if val == 0 then line = line .. ". "
+            elseif val == 1 then line = line .. "# "
+            else line = line .. val .. " " end
+        end
+        print(line)
+    end
+else
+    print("Путь не найден!")
+end
